@@ -5,7 +5,7 @@ import rotasUsuarios from './routes/usuarios.js'
 import rotasGeo from './routes/geo.js'
 import rotaUpload from './routes/upload.js'
 import rotasPasseadores from './routes/passeadores.js'
-import rotasPrestadores from './routes/prestadores.js'
+import rotasCaronas from './routes/caronas.js'
 
 const app = express();
 const port = process.env.PORT || 4000
@@ -25,7 +25,7 @@ app.use('/', express.static('public'))
 // Definimos a nossa rota default
 app.get('/api', (req, res) => {
   res.status(200).json({
-    message: 'API Dog Walker - 100% funcional!🐕👏',
+    message: 'API Carona Ponei - 100% funcional! 👏',
     version: '1.0.1'
   })
 
@@ -34,7 +34,7 @@ app.get('/api', (req, res) => {
 //Rotas 
 app.use('/api/usuarios', rotasUsuarios)
 app.use('/api/passeadores', rotasPasseadores)
-app.use('/api/prestadores', rotasPrestadores)
+app.use('/api/caronas', rotasCaronas)
 
 app.use('/api/geo', rotasGeo)
 

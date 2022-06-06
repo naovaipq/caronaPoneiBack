@@ -17,14 +17,25 @@ const { db, ObjectId } = await connectToDatabase()
  **********************************************/
 const validaUsuario = [
   check('nome')
-    .not().isEmpty().trim().withMessage('É obrigatório informar o nome do usuário')
-    .isAlpha('pt-BR', { ignore: ' ' }).withMessage('O nome do usuário deve conter apenas texto')
-    .isLength({ min: 3 }).withMessage('O nome do usuário é muito curto. Informe ao menos 3 caracteres')
-    .isLength({ max: 100 }).withMessage('O nome do usuário é muito longo. Informe no máximo 100 caracteres'),
+    .not()
+    .isEmpty()
+    .trim()
+    .withMessage('É obrigatório informar o nome do usuário')
+    .isAlpha('pt-BR', { ignore: ' ' })
+    .withMessage('O nome do usuário deve conter apenas texto')
+    .isLength({ min: 3 })
+    .withMessage('O nome do usuário é muito curto. Informe ao menos 3 caracteres')
+    .isLength({ max: 100 })
+    .withMessage('O nome do usuário é muito longo. Informe no máximo 100 caracteres'),
   check('email')
-    .not().isEmpty().trim().withMessage('É obrigatório informar o email do usuário')
-    .isLowercase().withMessage('O email não pode conter caracteres MAIÚSCULOS')
-    .isEmail().withMessage('O email do usuário deve ser válido')
+    .not()
+    .isEmpty()
+    .trim()
+    .withMessage('É obrigatório informar o email do usuário')
+    .isLowercase()
+    .withMessage('O email não pode conter caracteres MAIÚSCULOS')
+    .isEmail()
+    .withMessage('O email do usuário deve ser válido')
     .custom((value, { req }) => {
       return db.collection(nomeCollection).find({ email: { $eq: value } }).toArray()
         .then((email) => {
@@ -45,16 +56,25 @@ const validaUsuario = [
     }).withMessage('A senha informada não é segura. Ela deve conter ao menos 1 letra maiúscula, 1 número e 1 símbolo '),
   check('ativo')
     .default(true)
-    .not().isString().withMessage('O valor informado para o campo ativo não pode ser um texto')
-    .not().isInt().withMessage('O valor informado para o campo ativo não pode ser um número')
-    .isBoolean().withMessage('O valor informado para o campo ativo deve ser um booleano (True ou False)'),
+    .not()
+    .isString()
+    .withMessage('O valor informado para o campo ativo não pode ser um texto')
+    .not()
+    .isInt()
+    .withMessage('O valor informado para o campo ativo não pode ser um número')
+    .isBoolean()
+    .withMessage('O valor informado para o campo ativo deve ser um booleano (True ou False)'),
   check('tipo')
-    .default('Cliente')
-    .not().isEmpty().trim().withMessage('É obrigatório informar o tipo do usuário')
-    .isIn(['Admin', 'Cliente', 'Profissional']).withMessage('O tipo informado deve ser Admin, Cliente ou Profissional'),
+    .default('Estudante')
+    .not()
+    .isEmpty()
+    .trim()
+    .withMessage('É obrigatório informar o tipo do usuário')
+    .isIn(['Admin', 'Estudante', 'Professor']).withMessage('O tipo informado deve ser Admin, Estudante ou Professor'),
   check('avatar')
     .default('https://ui-avatars.com/api/?background=3700B3&color=FFFFFF&name=Dog+Walker')
-    .isURL().withMessage('O endereço do avatar deve ser uma URL válida')
+    .isURL()
+    .withMessage('O endereço do avatar deve ser uma URL válida')
 ]
 
 
@@ -148,9 +168,9 @@ router.get('/id/:id', async (req, res) => {
  * GET /api/usuarios/nome/:filtro
  **********************************************************/
 router.get('/nome/:filtro', async (req, res) => {
-    /* 
-  #swagger.tags = ['Usuários']
-  #swagger.description = 'Endpoint para obter o usuário através parte do seu nome ou e-mail' */
+  /* 
+#swagger.tags = ['Usuários']
+#swagger.description = 'Endpoint para obter o usuário através parte do seu nome ou e-mail' */
   /*
   #swagger.parameters['filtro'] = {
           in: 'path',
@@ -201,25 +221,25 @@ router.get('/nome/:filtro', async (req, res) => {
  * POST /usuarios/
  **********************************************/
 router.post('/', validaUsuario, async (req, res) => {
-   /* #swagger.tags = ['Usuários']
-      #swagger.description = 'Endpoint para adicionar um novo usuário.' */
+  /* #swagger.tags = ['Usuários']
+     #swagger.description = 'Endpoint para adicionar um novo usuário.' */
 
-   /*   #swagger.parameters['dadosUsuário'] = {
-               in: 'body',
-               description: 'Informações do usuário.',
-               required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/DadosUsuário" }
-        } 
-        */
+  /*   #swagger.parameters['dadosUsuário'] = {
+              in: 'body',
+              description: 'Informações do usuário.',
+              required: true,
+              type: 'object',
+              schema: { $ref: "#/definitions/DadosUsuário" }
+       } 
+       */
   //Verificando os erros
   const schemaErrors = validationResult(req)
   if (!schemaErrors.isEmpty()) {
-     /* 
-    #swagger.responses[403] = { 
-    schema: { "$ref": "#/definitions/Erro" },
-    description: "Erro ao tentar incluir o novo usuário" } 
-    */
+    /* 
+   #swagger.responses[403] = { 
+   schema: { "$ref": "#/definitions/Erro" },
+   description: "Erro ao tentar incluir o novo usuário" } 
+   */
     return res.status(403).json(({
       errors: schemaErrors.array() //retorna um Forbidden
     }))
@@ -243,17 +263,17 @@ router.post('/', validaUsuario, async (req, res) => {
  * PUT /usuarios/:id
  **********************************************/
 router.put('/:id', validaUsuario, async (req, res) => {
-     /* #swagger.tags = ['Usuários']
-      #swagger.description = 'Endpoint para alterar um usuário.' */
+  /* #swagger.tags = ['Usuários']
+   #swagger.description = 'Endpoint para alterar um usuário.' */
 
-   /*   #swagger.parameters['dadosUsuário'] = {
-               in: 'body',
-               description: 'Informações do usuário.',
-               required: true,
-               type: 'object',
-               schema: { $ref: "#/definitions/DadosUsuário" }
-        } 
-        */
+  /*   #swagger.parameters['dadosUsuário'] = {
+              in: 'body',
+              description: 'Informações do usuário.',
+              required: true,
+              type: 'object',
+              schema: { $ref: "#/definitions/DadosUsuário" }
+       } 
+       */
   const schemaErrors = validationResult(req)
   if (!schemaErrors.isEmpty()) {
     return res.status(403).json(({
@@ -264,7 +284,7 @@ router.put('/:id', validaUsuario, async (req, res) => {
       .updateOne({ '_id': { $eq: ObjectId(req.params.id) } },
         { $set: req.body }
       )
-       // #swagger.responses[202] = { description: 'Usuário alterado com sucesso!' }
+      // #swagger.responses[202] = { description: 'Usuário alterado com sucesso!' }
       .then(result => res.status(202).send(result))
       // #swagger.responses[400] = { description: 'Bad Request' } 
       .catch(err => res.status(400).json(err))
@@ -275,8 +295,8 @@ router.put('/:id', validaUsuario, async (req, res) => {
  * DELETE /usuarios/:id
  **********************************************/
 router.delete('/:id', async (req, res) => {
-     /* #swagger.tags = ['Usuários']
-      #swagger.description = 'Endpoint para apagar um usuário pelo id.' */
+  /* #swagger.tags = ['Usuários']
+   #swagger.description = 'Endpoint para apagar um usuário pelo id.' */
   await db.collection(nomeCollection)
     .deleteOne({ '_id': { $eq: ObjectId(req.params.id) } })
     .then(result => res.status(202).send(result))
@@ -298,9 +318,9 @@ const validaLogin = [
 ]
 
 router.post('/login', validaLogin,
-   /* #swagger.tags = ['Usuários']
-      #swagger.description = 'Endpoint para validar o login do usuário e retornar o token JWT.' */
-      
+  /* #swagger.tags = ['Usuários']
+     #swagger.description = 'Endpoint para validar o login do usuário e retornar o token JWT.' */
+
   async (req, res) => {
     const schemaErrors = validationResult(req)
     if (!schemaErrors.isEmpty()) {
@@ -372,8 +392,8 @@ router.post('/login', validaLogin,
  * POST /usuarios/token
  **********************************************/
 router.get('/token', auth, async (req, res) => {
-     /* #swagger.tags = ['Usuários']
-      #swagger.description = 'Endpoint para verificar se o token passado é válido' */
+  /* #swagger.tags = ['Usuários']
+   #swagger.description = 'Endpoint para verificar se o token passado é válido' */
   // O token enviado junto com a requisição será validado através do auth
   try {
     //A partir do usuário recebido no Token, iremos dar um 'Refresh' no Token, gerando-o novamente
